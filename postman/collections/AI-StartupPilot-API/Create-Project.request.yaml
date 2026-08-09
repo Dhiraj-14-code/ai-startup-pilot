@@ -1,0 +1,51 @@
+$kind: http-request
+name: Create Project
+method: POST
+url: '{{baseUrl}}/api/projects'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "My Startup",
+      "description": "A test startup project",
+      "status": "PLANNING"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+
+      pm.test("Response has JSON body", function () {
+          pm.response.to.be.json;
+      });
+
+      pm.test("Response body has field 'id' (not null)", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.id).to.not.be.null;
+          pm.expect(jsonData.id).to.not.be.undefined;
+      });
+
+      pm.test("Response body has field 'name' equal to 'My Startup'", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.name).to.eql("My Startup");
+      });
+
+      pm.test("Response body has field 'status' equal to 'PLANNING'", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql("PLANNING");
+      });
+
+      pm.test("Response body has field 'createdAt' (not null)", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.createdAt).to.not.be.null;
+          pm.expect(jsonData.createdAt).to.not.be.undefined;
+      });
+
+      pm.collectionVariables.set("projectId", pm.response.json().id);

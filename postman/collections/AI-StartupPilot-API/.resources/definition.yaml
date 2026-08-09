@@ -1,0 +1,6 @@
+$kind: collection
+name: AI StartupPilot API
+description: Test collection for AI StartupPilot backend API
+variables:
+  - key: baseUrl
+    value: 'http://localhost:8080'

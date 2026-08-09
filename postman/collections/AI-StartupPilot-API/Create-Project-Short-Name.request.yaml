@@ -1,0 +1,23 @@
+$kind: http-request
+name: Create Project - Short Name
+method: POST
+url: '{{baseUrl}}/api/projects'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "AB",
+      "description": "Name too short",
+      "status": "ACTIVE"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400 (name must be at least 3 chars)", function () {
+          pm.response.to.have.status(400);
+      });

@@ -1,0 +1,27 @@
+$kind: http-request
+name: Create Project - Missing Name
+method: POST
+url: '{{baseUrl}}/api/projects'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "description": "Missing name field",
+      "status": "ACTIVE"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400 (validation error)", function () {
+          pm.response.to.have.status(400);
+      });
+
+      pm.test("Response body contains validation error message", function () {
+          var responseText = pm.response.text();
+          pm.expect(responseText).to.not.be.empty;
+      });

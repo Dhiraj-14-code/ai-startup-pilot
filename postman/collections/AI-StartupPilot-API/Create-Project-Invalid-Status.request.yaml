@@ -1,0 +1,23 @@
+$kind: http-request
+name: Create Project - Invalid Status
+method: POST
+url: '{{baseUrl}}/api/projects'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Valid Name",
+      "description": "Test",
+      "status": "INVALID_STATUS"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 400", function () {
+          pm.response.to.have.status(400);
+      });

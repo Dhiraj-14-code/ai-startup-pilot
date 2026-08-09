@@ -1,0 +1,28 @@
+$kind: http-request
+name: Create Project - All Statuses
+method: POST
+url: '{{baseUrl}}/api/projects'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Active Project",
+      "description": "Testing all statuses",
+      "status": "ACTIVE"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status code is 201", function () {
+          pm.response.to.have.status(201);
+      });
+
+      pm.test("Response body has field 'status' equal to 'ACTIVE'", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql("ACTIVE");
+      });
