@@ -3,6 +3,7 @@ package com.ai_startuppilot.backend.service;
 import com.ai_startuppilot.backend.dto.ProjectRequestDTO;
 import com.ai_startuppilot.backend.dto.ProjectResponseDTO;
 import com.ai_startuppilot.backend.entity.Project;
+import com.ai_startuppilot.backend.exception.ProjectNotFoundException;
 import com.ai_startuppilot.backend.mapper.ProjectMapper;
 import com.ai_startuppilot.backend.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class ProjectService {
     //Get project by id
     public ProjectResponseDTO getProjectByID(Long id){
         Project project = projectRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Project ID Not Found!"));
+                .orElseThrow(()->new ProjectNotFoundException("Project Not Found!!"));
         return projectMapper.mapToDto(project);
     }
     //Update project by id
@@ -53,6 +54,7 @@ public class ProjectService {
     ){
         Project project = projectRepository.findById(id)
                 .orElseThrow(()->new RuntimeException("Project Id is not founnd!"));
+
         project.setName(requestDTO.getName());
         project.setDescription(requestDTO.getDescription());
         project.setStatus(requestDTO.getStatus());
@@ -64,7 +66,7 @@ public class ProjectService {
     //Delete Project
     public void deleteProject(Long id){
         Project project = projectRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("Project Id not found!"));
+                .orElseThrow(()->new ProjectNotFoundException("Project Not Found!!"));
         projectRepository.delete(project);
     }
 
