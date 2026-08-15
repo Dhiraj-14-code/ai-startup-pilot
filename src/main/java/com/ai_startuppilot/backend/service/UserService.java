@@ -12,30 +12,52 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
         private final UserRepository userRepository;
         private final UserMapper userMapper;
         private final PasswordEncoder passwordEncoder;
 
+        public UserService(
+                UserRepository userRepository,
+                UserMapper userMapper,
+                PasswordEncoder passwordEncoder) {
 
-        public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) {
                 this.userRepository = userRepository;
                 this.userMapper = userMapper;
                 this.passwordEncoder = passwordEncoder;
         }
-        public UserResponseDTO registerUser(UserRequestDTO requestDTO){
-                if (userRepository.findByEmail(requestDTO.getEmail()).isPresent()) {
+
+        // Register User
+        public UserResponseDTO registerUser(
+                UserRequestDTO requestDTO) {
+
+                // Check karo email already registered hai ya nahi
+                if (userRepository.findByEmail(
+                        requestDTO.getEmail()).isPresent()) {
+
                         throw new EmailAlreadyExists(
-                                "Email already exists: " + requestDTO.getEmail()
+                                "Email already exists: "
+                                        + requestDTO.getEmail()
                         );
-                }                        User user = userMapper.mapToEntity(requestDTO);
-                        user.setRole(UserRole.USER);
-                        user.setPassword(
-                                passwordEncoder.encode(requestDTO.getPassword())
-                        );
-                        User savedUser = userRepository.save(user);
+                }
 
+                // DTO → Entity
+                User user = userMapper.mapToEntity(requestDTO);
 
+                // Default role USER set kar rahe hain
+                user.setRole(UserRole.USER);
+
+                // Password ko hash karke database mein save karenge
+                user.setPassword(
+                        passwordEncoder.encode(
+                                requestDTO.getPassword()
+                        )
+                );
+
+                // Database mein save
+                User savedUser = userRepository.save(user);
+
+                // Entity → Response DTO
                 return userMapper.mapToDto(savedUser);
-
         }
 }
