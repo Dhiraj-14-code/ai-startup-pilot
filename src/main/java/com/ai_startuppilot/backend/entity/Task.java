@@ -58,4 +58,11 @@ public class Task {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // Central business rule: Task is overdue if not completed/cancelled and past due date
+    public boolean isOverdue() {
+        return dueDate != null
+                && dueDate.isBefore(LocalDateTime.now())
+                && status != TaskStatus.COMPLETED;
+    }
 }

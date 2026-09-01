@@ -67,7 +67,7 @@ public class ProjectHealthService {
                 .count();
 
         int overdueTasks = (int) tasks.stream()
-                .filter(this::isTaskOverdue)
+                .filter(Task::isOverdue)
                 .count();
 
         int totalMilestones = milestones.size();
@@ -163,14 +163,6 @@ public class ProjectHealthService {
         }
 
         return ((double) completed / total) * 100;
-    }
-
-    // Task overdue hai ya nahi
-    private boolean isTaskOverdue(Task task) {
-
-        return task.getDueDate() != null
-                && task.getDueDate().isBefore(LocalDateTime.now())
-                && task.getStatus() != TaskStatus.COMPLETED;
     }
 
 
