@@ -43,12 +43,12 @@ public class Task {
     private LocalDateTime dueDate;
 
     // Har task ek project ka part hoga
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     // Ek task ek user ko assign kiya ja sakta hai
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assigned_user_id")
     private User assignedUser;
 

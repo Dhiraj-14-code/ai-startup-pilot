@@ -36,7 +36,7 @@ public class Milestone {
     private LocalDateTime dueDate;
 
     //Har milesStone ek project ke andar hoga
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id",nullable = false)
     private Project project;
 

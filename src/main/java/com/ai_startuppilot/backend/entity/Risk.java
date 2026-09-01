@@ -40,7 +40,7 @@ public class Risk {
     private RiskStatus status;
 
     // Har risk ek project se related hoga
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
