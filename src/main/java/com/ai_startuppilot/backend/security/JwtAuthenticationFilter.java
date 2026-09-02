@@ -36,20 +36,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
         String token = authHeader.substring(7);//The actual JWT starts after those 7 characters.
-        String username = jwtService.extractUsername(token);
-        User user = userRepository.findByEmail(username)
-                .orElse(null);
-        if (user != null && jwtService.isTokenValid(token, user)) {
-
-            // Authentication will be added here
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            user,
-                            null,
-                            Collections.emptyList()
-                    );
-            SecurityContextHolder.getContext()
-                    .setAuthentication(authentication);
+        try {
+            String username = jwtService.extractUsername(token);
+            User user = userRepository.findByEmail(username).orElse(null);
+            
+            if (user != null && jwtService.isTokenValid(token, user)) {
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                user,
+                                null,
+                                Collections.emptyList()
+                        );
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (Exception e) {
+            // Token is invalid, expired, or malformed.
+            // Do nothing, leave the SecurityContext empty.
+            // Spring Security will automatically return 401/403 for protected routes.
         }
 
         filterChain.doFilter(request,response);

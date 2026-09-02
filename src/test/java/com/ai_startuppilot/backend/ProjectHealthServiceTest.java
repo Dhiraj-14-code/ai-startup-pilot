@@ -50,61 +50,183 @@ public class ProjectHealthServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    // ===== Helper to setup common mocks =====
+    private void mockEmptyMilestonesAndRisks(Long projectId) {
+        when(milestoneRepository.findByProjectId(eq(projectId), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(riskRepository.findByProjectId(eq(projectId), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(new ArrayList<>()));
+    }
+
+    private Project makeProject(Long id, String name) {
+        Project project = new Project();
+        project.setId(id);
+        project.setName(name);
+        return project;
+    }
+
+    private Task makeTask(TaskStatus status, boolean overdue) {
+        Task task = new Task();
+        task.setStatus(status);
+        if (overdue) {
+            task.setDueDate(LocalDateTime.now().minusDays(2));
+        } else {
+            task.setDueDate(LocalDateTime.now().plusDays(2));
+        }
+        return task;
+    }
+
+    // ===== Zero Tasks =====
     @Test
     void testProjectHealth_WithZeroTasks_ShouldHaveZeroOverdueAnd100PercentCompletion() {
-        Project project = new Project();
-        project.setId(1L);
-        project.setName("Empty Project");
-        
+        Project project = makeProject(1L, "Empty Project");
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
         when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
-        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
-        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        mockEmptyMilestonesAndRisks(1L);
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
-        
+
         assertEquals(0, health.getOverdueTasks(), "Overdue tasks should be zero");
         assertEquals(100.0, health.getTaskCompletionRate(), "Completion rate for 0 tasks should be 100%");
-        assertTrue(health.getWarnings().stream().noneMatch(w -> w.contains("overdue")), "Should not have overdue warnings");
+        assertTrue(health.getWarnings().stream().noneMatch(w -> w.contains("overdue")),
+                "Should not have overdue warnings when no tasks");
     }
 
+    // ===== All Completed =====
     @Test
     void testProjectHealth_WithAllCompletedTasks_ShouldHave100PercentCompletion() {
-        Project project = new Project();
-        project.setId(1L);
-        
-        Task task1 = new Task();
-        task1.setStatus(TaskStatus.COMPLETED);
-        
+        Project project = makeProject(1L, "Full Project");
+        Task t1 = makeTask(TaskStatus.COMPLETED, false);
+        Task t2 = makeTask(TaskStatus.COMPLETED, false);
+
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(task1)));
-        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
-        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(t1, t2)));
+        mockEmptyMilestonesAndRisks(1L);
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
-        
+
         assertEquals(100.0, health.getTaskCompletionRate(), "Completion rate should be 100%");
         assertEquals(0, health.getOverdueTasks(), "Overdue tasks should be 0");
+        assertTrue(health.getWarnings().stream().noneMatch(w -> w.contains("overdue")),
+                "No overdue warning when all tasks completed");
     }
 
+    // ===== Partial Completion (50%) =====
     @Test
     void testProjectHealth_WithSomeCompletedTasks_ShouldCalculateCorrectPercentage() {
-        Project project = new Project();
-        project.setId(1L);
-        
-        Task task1 = new Task();
-        task1.setStatus(TaskStatus.COMPLETED);
-        
-        Task task2 = new Task();
-        task2.setStatus(TaskStatus.TODO);
-        
+        Project project = makeProject(1L, "Partial Project");
+        Task completed = makeTask(TaskStatus.COMPLETED, false);
+        Task todo = makeTask(TaskStatus.TODO, false);
+
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(task1, task2)));
-        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
-        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(completed, todo)));
+        mockEmptyMilestonesAndRisks(1L);
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
-        
+
         assertEquals(50.0, health.getTaskCompletionRate(), "Completion rate should be 50%");
+    }
+
+    // ===== No Completed Tasks =====
+    @Test
+    void testProjectHealth_WithNoCompletedTasks_ShouldHave0PercentCompletion() {
+        Project project = makeProject(1L, "No Progress Project");
+        Task t1 = makeTask(TaskStatus.TODO, false);
+        Task t2 = makeTask(TaskStatus.IN_PROGRESS, false);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(t1, t2)));
+        mockEmptyMilestonesAndRisks(1L);
+
+        ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
+
+        assertEquals(0.0, health.getTaskCompletionRate(), "Completion rate should be 0%");
+        assertTrue(health.getWarnings().stream().anyMatch(w -> w.contains("50%")),
+                "Should have warning about completion rate below 50%");
+    }
+
+    // ===== Overdue tasks affect health =====
+    @Test
+    void testProjectHealth_WithOverdueTasks_ShouldReportOverdueAndReduceScore() {
+        Project project = makeProject(1L, "Overdue Project");
+        Task overdue = makeTask(TaskStatus.TODO, true);
+        Task onTime  = makeTask(TaskStatus.TODO, false);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(overdue, onTime)));
+        mockEmptyMilestonesAndRisks(1L);
+
+        ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
+
+        assertEquals(1, health.getOverdueTasks(), "Should report 1 overdue task");
+        assertTrue(health.getWarnings().stream().anyMatch(w -> w.contains("overdue")),
+                "Should have overdue warning");
+    }
+
+    // ===== Zero overdue tasks should NOT produce overdue warning =====
+    @Test
+    void testProjectHealth_WithZeroOverdueTasks_ShouldNotProduceOverdueWarning() {
+        Project project = makeProject(1L, "On-Time Project");
+        Task t1 = makeTask(TaskStatus.IN_PROGRESS, false);
+        Task t2 = makeTask(TaskStatus.TODO, false);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(t1, t2)));
+        mockEmptyMilestonesAndRisks(1L);
+
+        ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
+
+        assertEquals(0, health.getOverdueTasks());
+        assertTrue(health.getWarnings().stream().noneMatch(w -> w.contains("overdue")),
+                "Zero overdue tasks should not produce an overdue warning");
+    }
+
+    // ===== Mixed states (TODO, IN_PROGRESS, BLOCKED, COMPLETED) =====
+    @Test
+    void testProjectHealth_WithMixedTaskStates_ShouldOnlyCountCompleted() {
+        Project project = makeProject(1L, "Mixed Project");
+        Task completed  = makeTask(TaskStatus.COMPLETED, false);
+        Task todo       = makeTask(TaskStatus.TODO, false);
+        Task inProgress = makeTask(TaskStatus.IN_PROGRESS, false);
+        Task blocked    = makeTask(TaskStatus.BLOCKED, false);
+
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(completed, todo, inProgress, blocked)));
+        mockEmptyMilestonesAndRisks(1L);
+
+        ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
+
+        assertEquals(25.0, health.getTaskCompletionRate(), "Only COMPLETED tasks count toward rate");
+    }
+
+    // ===== Project Not Found =====
+    @Test
+    void testProjectHealth_WhenProjectNotFound_ShouldThrowException() {
+        when(projectRepository.findById(999L)).thenReturn(Optional.empty());
+
+        assertThrows(
+                com.ai_startuppilot.backend.exception.ProjectNotFoundException.class,
+                () -> projectHealthService.getProjectHealth(999L),
+                "Should throw ProjectNotFoundException for non-existent project"
+        );
+    }
+
+    // ===== Health Status threshold =====
+    @Test
+    void testProjectHealth_WithHighCompletion_ShouldBeHealthy() {
+        Project project = makeProject(1L, "Healthy Project");
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            tasks.add(makeTask(TaskStatus.COMPLETED, false));
+        }
+        when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(tasks));
+        mockEmptyMilestonesAndRisks(1L);
+
+        ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
+
+        assertEquals("HEALTHY", health.getHealthStatus(), "Project with high completion should be HEALTHY");
+        assertTrue(health.getHealthScore() >= 80, "Health score should be >= 80 for healthy project");
     }
 }

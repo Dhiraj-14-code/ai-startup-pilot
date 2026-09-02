@@ -44,11 +44,14 @@ public class SecurityConfig {
                     )
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
-                            .requestMatchers("/api/users/register",
-                                    "/api/auth/login"
+                            .requestMatchers(
+                                    "/api/v1/users/register",
+                                    "/api/v1/auth/login",
+                                    "/swagger-ui/**",
+                                    "/v3/api-docs/**"
                             )
-                            .permitAll()//Anyone can access registration without authentication.
-                            .anyRequest().authenticated()//Every other endpoint requires authentication.
+                            .permitAll()
+                            .anyRequest().authenticated()
                     );
 
             return http.build();
