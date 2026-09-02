@@ -12,6 +12,8 @@ import com.ai_startuppilot.backend.mapper.TaskMapper;
 import com.ai_startuppilot.backend.repository.ProjectRepository;
 import com.ai_startuppilot.backend.repository.TaskRepository;
 import com.ai_startuppilot.backend.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,14 +78,11 @@ public class TaskService {
     }
 
     // Get all Tasks
-    public List<TaskResponseDTO> getAllTask() {
+    public Page<TaskResponseDTO> getAllTask(Pageable pageable) {
 
-        List<Task> tasks = taskRepository.findAll();
+        Page<Task> tasks = taskRepository.findAll(pageable);
 
-        return tasks
-                .stream()
-                .map(taskMapper::mapToDto)
-                .toList();
+        return tasks.map(taskMapper::mapToDto);
     }
 
     // Get Task by ID

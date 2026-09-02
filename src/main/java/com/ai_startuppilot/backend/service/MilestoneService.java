@@ -9,6 +9,8 @@ import com.ai_startuppilot.backend.exception.ProjectNotFoundException;
 import com.ai_startuppilot.backend.mapper.MilestoneMapper;
 import com.ai_startuppilot.backend.repository.MilestoneRepository;
 import com.ai_startuppilot.backend.repository.ProjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -47,14 +49,12 @@ public class MilestoneService {
     }
 
     // Get all milestones
-    public List<MilestoneResponseDTO> getAllMilestones() {
+    public Page<MilestoneResponseDTO> getAllMilestones(Pageable pageable) {
 
-        List<Milestone> milestones =
-                milestoneRepository.findAll();
+        Page<Milestone> milestones =
+                milestoneRepository.findAll(pageable);
 
-        return milestones.stream()
-                .map(milestoneMapper::mapToDto)
-                .toList();
+        return milestones.map(milestoneMapper::mapToDto);
     }
 
     // Get milestone by ID

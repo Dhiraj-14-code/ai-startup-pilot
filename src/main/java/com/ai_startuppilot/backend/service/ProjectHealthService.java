@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @Service
 public class ProjectHealthService {
@@ -50,13 +51,13 @@ public class ProjectHealthService {
 
         // Project ke related data ko fetch karo
         List<Task> tasks =
-                taskRepository.findByProjectId(projectId);
+                taskRepository.findByProjectId(projectId, Pageable.unpaged()).getContent();
 
         List<Milestone> milestones =
-                milestoneRepository.findByProjectId(projectId);
+                milestoneRepository.findByProjectId(projectId, Pageable.unpaged()).getContent();
 
         List<Risk> risks =
-                riskRepository.findByProjectId(projectId);
+                riskRepository.findByProjectId(projectId, Pageable.unpaged()).getContent();
 
         // Metrics calculate karo
         int totalTasks = tasks.size();

@@ -20,8 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 public class ProjectHealthServiceTest {
@@ -53,9 +57,9 @@ public class ProjectHealthServiceTest {
         project.setName("Empty Project");
         
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(taskRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
-        when(milestoneRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
-        when(riskRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
         
@@ -73,9 +77,9 @@ public class ProjectHealthServiceTest {
         task1.setStatus(TaskStatus.COMPLETED);
         
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(taskRepository.findByProjectId(1L)).thenReturn(List.of(task1));
-        when(milestoneRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
-        when(riskRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(task1)));
+        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
         
@@ -95,9 +99,9 @@ public class ProjectHealthServiceTest {
         task2.setStatus(TaskStatus.TODO);
         
         when(projectRepository.findById(1L)).thenReturn(Optional.of(project));
-        when(taskRepository.findByProjectId(1L)).thenReturn(List.of(task1, task2));
-        when(milestoneRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
-        when(riskRepository.findByProjectId(1L)).thenReturn(new ArrayList<>());
+        when(taskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(task1, task2)));
+        when(milestoneRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
+        when(riskRepository.findByProjectId(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(new ArrayList<>()));
 
         ProjectHealthResponseDTO health = projectHealthService.getProjectHealth(1L);
         

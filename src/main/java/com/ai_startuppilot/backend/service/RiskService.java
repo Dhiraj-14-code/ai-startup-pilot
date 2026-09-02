@@ -9,6 +9,8 @@ import com.ai_startuppilot.backend.exception.RiskNotFoundException;
 import com.ai_startuppilot.backend.mapper.RiskMapper;
 import com.ai_startuppilot.backend.repository.ProjectRepository;
 import com.ai_startuppilot.backend.repository.RiskRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -50,13 +52,11 @@ public class RiskService {
     }
 
     // Get all Risks
-    public List<RiskResponseDTO> getAllRisks() {
+    public Page<RiskResponseDTO> getAllRisks(Pageable pageable) {
 
-        List<Risk> risks = riskRepository.findAll();
+        Page<Risk> risks = riskRepository.findAll(pageable);
 
-        return risks.stream()
-                .map(riskMapper::mapToDto)
-                .toList();
+        return risks.map(riskMapper::mapToDto);
     }
 
     // Get Risk by ID

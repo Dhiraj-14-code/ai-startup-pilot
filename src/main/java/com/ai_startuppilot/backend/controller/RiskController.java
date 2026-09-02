@@ -5,14 +5,14 @@ import com.ai_startuppilot.backend.dto.RiskResponseDTO;
 import com.ai_startuppilot.backend.service.RiskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/risks")
+@RequestMapping("/api/v1/risks")
 @RequiredArgsConstructor
 public class RiskController {
 
@@ -33,10 +33,10 @@ public class RiskController {
 
     // Get all Risks
     @GetMapping
-    public ResponseEntity<List<RiskResponseDTO>> getAllRisks() {
+    public ResponseEntity<Page<RiskResponseDTO>> getAllRisks(Pageable pageable) {
 
-        List<RiskResponseDTO> responseDTO =
-                riskService.getAllRisks();
+        Page<RiskResponseDTO> responseDTO =
+                riskService.getAllRisks(pageable);
 
         return ResponseEntity.ok(responseDTO);
     }

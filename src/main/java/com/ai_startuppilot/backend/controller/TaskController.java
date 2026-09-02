@@ -5,14 +5,14 @@ import com.ai_startuppilot.backend.dto.TaskResponseDTO;
 import com.ai_startuppilot.backend.service.TaskService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/v1/tasks")
 @RequiredArgsConstructor
 public class TaskController {
 
@@ -30,8 +30,8 @@ public class TaskController {
                 .body(responseDTO);
     }
     @GetMapping
-    public ResponseEntity<List<TaskResponseDTO>> getAllTask(){
-        List<TaskResponseDTO> responseDTO = taskService.getAllTask();
+    public ResponseEntity<Page<TaskResponseDTO>> getAllTask(Pageable pageable){
+        Page<TaskResponseDTO> responseDTO = taskService.getAllTask(pageable);
         return ResponseEntity.ok(responseDTO);
     }
 

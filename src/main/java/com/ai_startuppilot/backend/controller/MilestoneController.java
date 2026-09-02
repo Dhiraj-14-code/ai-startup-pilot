@@ -5,14 +5,14 @@ import com.ai_startuppilot.backend.dto.MilestoneResponseDTO;
 import com.ai_startuppilot.backend.service.MilestoneService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/milestones")
+@RequestMapping("/api/v1/milestones")
 @RequiredArgsConstructor
 public class MilestoneController {
 
@@ -33,10 +33,10 @@ public class MilestoneController {
 
     // Get all
     @GetMapping
-    public ResponseEntity<List<MilestoneResponseDTO>> getAllMilestones() {
+    public ResponseEntity<Page<MilestoneResponseDTO>> getAllMilestones(Pageable pageable) {
 
-        List<MilestoneResponseDTO> responseDTO =
-                milestoneService.getAllMilestones();
+        Page<MilestoneResponseDTO> responseDTO =
+                milestoneService.getAllMilestones(pageable);
 
         return ResponseEntity.ok(responseDTO);
     }
