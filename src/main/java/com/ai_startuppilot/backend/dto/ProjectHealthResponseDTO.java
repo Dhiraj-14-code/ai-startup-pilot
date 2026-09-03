@@ -31,4 +31,9 @@ public class ProjectHealthResponseDTO {
     private int highRisks;
     private int mediumRisks;
     private int lowRisks;
+
+    // AI fields
+    private String prediction;
+    private List<String> insights;
+    private Object workloadAnalysis;
 }

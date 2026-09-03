@@ -1,5 +1,6 @@
 package com.ai_startuppilot.backend.service;
 
+import com.ai_startuppilot.backend.dto.ProjectAIRequestDTO;
 import com.ai_startuppilot.backend.dto.ProjectHealthResponseDTO;
 import com.ai_startuppilot.backend.entity.Milestone;
 import com.ai_startuppilot.backend.entity.Project;
@@ -14,12 +15,15 @@ import com.ai_startuppilot.backend.repository.MilestoneRepository;
 import com.ai_startuppilot.backend.repository.ProjectRepository;
 import com.ai_startuppilot.backend.repository.RiskRepository;
 import com.ai_startuppilot.backend.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.data.domain.Pageable;
+import java.util.stream.Collectors;
 
 @Service
 public class ProjectHealthService {
@@ -28,17 +32,20 @@ public class ProjectHealthService {
     private final TaskRepository taskRepository;
     private final MilestoneRepository milestoneRepository;
     private final RiskRepository riskRepository;
+    private final RestClient restClient;
 
     public ProjectHealthService(
             ProjectRepository projectRepository,
             TaskRepository taskRepository,
             MilestoneRepository milestoneRepository,
-            RiskRepository riskRepository) {
+            RiskRepository riskRepository,
+            @Value("${ai.service.url:http://localhost:8000}") String aiServiceUrl) {
 
         this.projectRepository = projectRepository;
         this.taskRepository = taskRepository;
         this.milestoneRepository = milestoneRepository;
         this.riskRepository = riskRepository;
+        this.restClient = RestClient.builder().baseUrl(aiServiceUrl).build();
     }
 
     public ProjectHealthResponseDTO getProjectHealth(Long projectId) {
@@ -59,6 +66,64 @@ public class ProjectHealthService {
         List<Risk> risks =
                 riskRepository.findByProjectId(projectId, Pageable.unpaged()).getContent();
 
+        try {
+            return getProjectHealthFromAI(project, tasks, milestones, risks);
+        } catch (Exception e) {
+            System.err.println("AI Service failed, falling back to deterministic calculation: " + e.getMessage());
+            return calculateDeterministicHealth(project, tasks, milestones, risks);
+        }
+    }
+
+    private ProjectHealthResponseDTO getProjectHealthFromAI(
+            Project project, List<Task> tasks, List<Milestone> milestones, List<Risk> risks) {
+        
+        ProjectAIRequestDTO requestDTO = new ProjectAIRequestDTO();
+        requestDTO.setProjectId(project.getId());
+        requestDTO.setProjectName(project.getName());
+        
+        requestDTO.setTasks(tasks.stream().map(t -> {
+            ProjectAIRequestDTO.TaskDTO dto = new ProjectAIRequestDTO.TaskDTO();
+            dto.setId(t.getId());
+            dto.setTitle(t.getTitle());
+            dto.setStatus(t.getStatus().name());
+            dto.setPriority(t.getPriority().name());
+            dto.setDueDate(t.getDueDate());
+            if (t.getAssignedUser() != null) {
+                dto.setAssignedUserId(t.getAssignedUser().getId());
+                dto.setAssignedUserName(t.getAssignedUser().getName());
+            }
+            return dto;
+        }).collect(Collectors.toList()));
+        
+        requestDTO.setMilestones(milestones.stream().map(m -> {
+            ProjectAIRequestDTO.MilestoneDTO dto = new ProjectAIRequestDTO.MilestoneDTO();
+            dto.setId(m.getId());
+            dto.setTitle(m.getTitle());
+            dto.setStatus(m.getStatus().name());
+            dto.setDueDate(m.getDueDate());
+            return dto;
+        }).collect(Collectors.toList()));
+        
+        requestDTO.setRisks(risks.stream().map(r -> {
+            ProjectAIRequestDTO.RiskDTO dto = new ProjectAIRequestDTO.RiskDTO();
+            dto.setId(r.getId());
+            dto.setTitle(r.getTitle());
+            dto.setSeverity(r.getSeverity().name());
+            dto.setStatus(r.getStatus().name());
+            return dto;
+        }).collect(Collectors.toList()));
+        
+        ResponseEntity<ProjectHealthResponseDTO> response = restClient.post()
+                .uri("/api/v1/analyze/project")
+                .body(requestDTO)
+                .retrieve()
+                .toEntity(ProjectHealthResponseDTO.class);
+                
+        return response.getBody();
+    }
+
+    private ProjectHealthResponseDTO calculateDeterministicHealth(
+            Project project, List<Task> tasks, List<Milestone> milestones, List<Risk> risks) {
         // Metrics calculate karo
         int totalTasks = tasks.size();
 
@@ -150,6 +215,9 @@ public class ProjectHealthService {
 
         response.setWarnings(warnings);
         response.setRecommendations(recommendations);
+        
+        response.setPrediction("[RULE_BASED] Fallback prediction.");
+        response.setInsights(List.of("[RULE_BASED] Computed deterministically due to AI service unavailability."));
 
         return response;
     }
