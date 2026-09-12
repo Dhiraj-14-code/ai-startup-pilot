@@ -1,0 +1,70 @@
+{
+  "projectId": 101,
+  "projectName": "Project Nexus Rebuild",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup CI/CD Pipeline",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2024-02-15T10:00:00Z",
+      "assignedUserId": 10,
+      "assignedUserName": "Alice"
+    },
+    {
+      "id": 2,
+      "title": "Database Migration",
+      "status": "IN_PROGRESS",
+      "priority": "CRITICAL",
+      "dueDate": "2024-03-20T10:00:00Z",
+      "assignedUserId": 12,
+      "assignedUserName": "Bob"
+    },
+    {
+      "id": 3,
+      "title": "Update UI Components",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "dueDate": "2024-04-05T10:00:00Z",
+      "assignedUserId": 15,
+      "assignedUserName": "Charlie"
+    },
+    {
+      "id": 4,
+      "title": "Security Audit",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2024-03-25T10:00:00Z",
+      "assignedUserId": 10,
+      "assignedUserName": "Alice"
+    }
+  ],
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Alpha Release",
+      "status": "COMPLETED",
+      "dueDate": "2024-02-28T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Beta Launch",
+      "status": "PENDING",
+      "dueDate": "2024-04-15T10:00:00Z"
+    }
+  ],
+  "risks": [
+    {
+      "id": 1,
+      "title": "Cloud Provider Outage",
+      "severity": "CRITICAL",
+      "status": "OPEN"
+    },
+    {
+      "id": 2,
+      "title": "Dependency Deprecation",
+      "severity": "MEDIUM",
+      "status": "OPEN"
+    }
+  ]
+}

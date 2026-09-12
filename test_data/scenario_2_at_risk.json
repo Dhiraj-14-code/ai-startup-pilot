@@ -1,0 +1,136 @@
+{
+  "projectId": 202,
+  "projectName": "Project Ember — At Risk",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "API Architecture Design",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2025-05-01T10:00:00Z",
+      "assignedUserId": 20,
+      "assignedUserName": "Diana"
+    },
+    {
+      "id": 2,
+      "title": "Database Schema Finalization",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2025-05-15T10:00:00Z",
+      "assignedUserId": 21,
+      "assignedUserName": "Ethan"
+    },
+    {
+      "id": 3,
+      "title": "OAuth2 Integration",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "dueDate": "2025-07-01T10:00:00Z",
+      "assignedUserId": 20,
+      "assignedUserName": "Diana"
+    },
+    {
+      "id": 4,
+      "title": "Kubernetes Cluster Setup",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-06-10T10:00:00Z",
+      "assignedUserId": 21,
+      "assignedUserName": "Ethan"
+    },
+    {
+      "id": 5,
+      "title": "Unit Test Suite",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "dueDate": "2025-06-20T10:00:00Z",
+      "assignedUserId": 22,
+      "assignedUserName": "Fiona"
+    },
+    {
+      "id": 6,
+      "title": "Load Testing & Performance Benchmarks",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "dueDate": "2025-06-25T10:00:00Z",
+      "assignedUserId": 22,
+      "assignedUserName": "Fiona"
+    },
+    {
+      "id": 7,
+      "title": "Staging Environment Setup",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-06-01T10:00:00Z",
+      "assignedUserId": 20,
+      "assignedUserName": "Diana"
+    },
+    {
+      "id": 8,
+      "title": "Customer Onboarding Flow",
+      "status": "PENDING",
+      "priority": "LOW",
+      "dueDate": "2025-07-15T10:00:00Z",
+      "assignedUserId": 22,
+      "assignedUserName": "Fiona"
+    }
+  ],
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Architecture Sign-Off",
+      "status": "COMPLETED",
+      "dueDate": "2025-05-20T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Development Sprint 1",
+      "status": "COMPLETED",
+      "dueDate": "2025-06-01T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "QA & Testing Phase",
+      "status": "PENDING",
+      "dueDate": "2025-07-01T10:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Staging Deployment",
+      "status": "PENDING",
+      "dueDate": "2025-07-20T10:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Product Launch",
+      "status": "PENDING",
+      "dueDate": "2025-08-01T10:00:00Z"
+    }
+  ],
+  "risks": [
+    {
+      "id": 1,
+      "title": "Key engineer on leave for 3 weeks",
+      "severity": "HIGH",
+      "status": "OPEN"
+    },
+    {
+      "id": 2,
+      "title": "Cloud cost overrun risk",
+      "severity": "MEDIUM",
+      "status": "OPEN"
+    },
+    {
+      "id": 3,
+      "title": "Vendor API contract renewal pending",
+      "severity": "MEDIUM",
+      "status": "OPEN"
+    },
+    {
+      "id": 4,
+      "title": "Regulatory compliance gap",
+      "severity": "CRITICAL",
+      "status": "OPEN"
+    }
+  ]
+}

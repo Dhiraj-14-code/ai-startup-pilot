@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { getProjects, uploadFileForAnalysis } from '../api';
+import { getProjects, uploadFileForAnalysis } from '../services/api';
 import { Link } from 'react-router-dom';
+import AIInsights from '../components/AIInsights';
 
 const Dashboard = () => {
   const [projects, setProjects] = useState([]);
   const [file, setFile] = useState(null);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
 
   useEffect(() => {
     fetchProjects();
@@ -25,12 +27,15 @@ const Dashboard = () => {
     e.preventDefault();
     if (!file) return;
     setLoading(true);
+    setUploadError(null);
+    setAnalysisResult(null);
     try {
       const res = await uploadFileForAnalysis(file);
       setAnalysisResult(res.data);
     } catch (err) {
       console.error(err);
-      alert('Error uploading file');
+      const detail = err.response?.data?.detail || err.message || 'Unknown error. Is the AI service running on port 8000?';
+      setUploadError(detail);
     } finally {
       setLoading(false);
     }
@@ -51,26 +56,29 @@ const Dashboard = () => {
 
       <div className="file-upload-section">
         <h3>AI File Import & Analysis</h3>
+        <p className="subtitle">Upload your project data to get AI-driven insights and health scores.</p>
         <form onSubmit={handleFileUpload}>
-          <input type="file" onChange={e => setFile(e.target.files[0])} accept=".json,.csv,.xlsx,.pdf" />
-          <button type="submit" disabled={loading}>
-            {loading ? 'Analyzing...' : 'Upload & Analyze'}
-          </button>
+          <div className="upload-zone">
+            <div className="upload-icon">☁️</div>
+            <div className="upload-text">{file ? file.name : "Drag & drop your file here or click to browse"}</div>
+            <div className="upload-hint">Supports .json, .csv, .xlsx, .pdf</div>
+            <input type="file" onChange={e => setFile(e.target.files[0])} accept=".json,.csv,.xlsx,.pdf" />
+          </div>
+          <div className="upload-actions">
+            <button type="submit" disabled={loading || !file}>
+              {loading ? 'Analyzing...' : 'Upload & Analyze'}
+            </button>
+          </div>
         </form>
 
-        {analysisResult && (
-          <div className="analysis-result card">
-            <h4>Import Analysis Result</h4>
-            <p><strong>Health Score:</strong> {analysisResult.healthScore}</p>
-            <p><strong>Status:</strong> {analysisResult.healthStatus}</p>
-            <p><strong>Prediction:</strong> {analysisResult.prediction}</p>
-            <div>
-              <strong>Recommendations:</strong>
-              <ul>
-                {analysisResult.recommendations?.map((r, i) => <li key={i}>{r}</li>)}
-              </ul>
-            </div>
+        {uploadError && (
+          <div className="upload-error">
+            <strong>⚠ Analysis Failed:</strong> {uploadError}
           </div>
+        )}
+
+        {analysisResult && (
+          <AIInsights health={analysisResult} />
         )}
       </div>
     </div>

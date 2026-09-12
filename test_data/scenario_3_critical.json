@@ -1,0 +1,160 @@
+{
+  "projectId": 303,
+  "projectName": "Project Icarus — Critical & Burnout Risk",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Market Research Report",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "dueDate": "2024-11-01T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 2,
+      "title": "Core Product Architecture",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2024-11-15T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 3,
+      "title": "Backend API v1",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "dueDate": "2024-12-01T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 4,
+      "title": "Frontend MVP",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2024-12-15T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 5,
+      "title": "Mobile App Prototype",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-01-10T10:00:00Z",
+      "assignedUserId": 31,
+      "assignedUserName": "Hannah"
+    },
+    {
+      "id": 6,
+      "title": "Third-Party Integrations",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "dueDate": "2025-01-20T10:00:00Z",
+      "assignedUserId": 31,
+      "assignedUserName": "Hannah"
+    },
+    {
+      "id": 7,
+      "title": "Security Penetration Testing",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-02-01T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 8,
+      "title": "Investor Demo Prep",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-01-05T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    },
+    {
+      "id": 9,
+      "title": "Data Compliance (GDPR/CCPA)",
+      "status": "PENDING",
+      "priority": "MEDIUM",
+      "dueDate": "2024-12-20T10:00:00Z",
+      "assignedUserId": 31,
+      "assignedUserName": "Hannah"
+    },
+    {
+      "id": 10,
+      "title": "Production Deployment",
+      "status": "PENDING",
+      "priority": "HIGH",
+      "dueDate": "2025-02-15T10:00:00Z",
+      "assignedUserId": 30,
+      "assignedUserName": "George"
+    }
+  ],
+  "milestones": [
+    {
+      "id": 1,
+      "title": "Ideation & Research Phase",
+      "status": "COMPLETED",
+      "dueDate": "2024-11-20T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "MVP Development",
+      "status": "PENDING",
+      "dueDate": "2025-01-01T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Investor Demo",
+      "status": "PENDING",
+      "dueDate": "2025-01-15T10:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Soft Launch",
+      "status": "PENDING",
+      "dueDate": "2025-02-01T10:00:00Z"
+    },
+    {
+      "id": 5,
+      "title": "Series A Fundraising",
+      "status": "PENDING",
+      "dueDate": "2025-03-01T10:00:00Z"
+    }
+  ],
+  "risks": [
+    {
+      "id": 1,
+      "title": "Solo founder bandwidth — single point of failure",
+      "severity": "CRITICAL",
+      "status": "OPEN"
+    },
+    {
+      "id": 2,
+      "title": "Runway under 3 months",
+      "severity": "CRITICAL",
+      "status": "OPEN"
+    },
+    {
+      "id": 3,
+      "title": "Key dependency library EOL",
+      "severity": "HIGH",
+      "status": "OPEN"
+    },
+    {
+      "id": 4,
+      "title": "No disaster recovery plan",
+      "severity": "HIGH",
+      "status": "OPEN"
+    },
+    {
+      "id": 5,
+      "title": "Competitor launched similar product",
+      "severity": "MEDIUM",
+      "status": "OPEN"
+    }
+  ]
+}

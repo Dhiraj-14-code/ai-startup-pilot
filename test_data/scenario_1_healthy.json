@@ -1,0 +1,118 @@
+{
+  "projectId": 101,
+  "projectName": "Project Nova — Healthy Startup",
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Setup CI/CD Pipeline",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2025-01-10T10:00:00Z",
+      "assignedUserId": 10,
+      "assignedUserName": "Alice"
+    },
+    {
+      "id": 2,
+      "title": "Design System & UI Kit",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "dueDate": "2025-01-20T10:00:00Z",
+      "assignedUserId": 11,
+      "assignedUserName": "Bob"
+    },
+    {
+      "id": 3,
+      "title": "Backend API Setup",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2025-02-01T10:00:00Z",
+      "assignedUserId": 10,
+      "assignedUserName": "Alice"
+    },
+    {
+      "id": 4,
+      "title": "User Authentication Module",
+      "status": "COMPLETED",
+      "priority": "HIGH",
+      "dueDate": "2025-02-10T10:00:00Z",
+      "assignedUserId": 12,
+      "assignedUserName": "Charlie"
+    },
+    {
+      "id": 5,
+      "title": "Dashboard Frontend",
+      "status": "COMPLETED",
+      "priority": "MEDIUM",
+      "dueDate": "2025-02-20T10:00:00Z",
+      "assignedUserId": 11,
+      "assignedUserName": "Bob"
+    },
+    {
+      "id": 6,
+      "title": "Payment Gateway Integration",
+      "status": "IN_PROGRESS",
+      "priority": "HIGH",
+      "dueDate": "2027-04-30T10:00:00Z",
+      "assignedUserId": 12,
+      "assignedUserName": "Charlie"
+    },
+    {
+      "id": 7,
+      "title": "Analytics Dashboard",
+      "status": "IN_PROGRESS",
+      "priority": "LOW",
+      "dueDate": "2027-05-15T10:00:00Z",
+      "assignedUserId": 10,
+      "assignedUserName": "Alice"
+    },
+    {
+      "id": 8,
+      "title": "Mobile Responsive Layout",
+      "status": "PENDING",
+      "priority": "LOW",
+      "dueDate": "2027-06-01T10:00:00Z",
+      "assignedUserId": 11,
+      "assignedUserName": "Bob"
+    }
+  ],
+  "milestones": [
+    {
+      "id": 1,
+      "title": "MVP Foundations Complete",
+      "status": "COMPLETED",
+      "dueDate": "2025-02-28T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "title": "Alpha Release",
+      "status": "COMPLETED",
+      "dueDate": "2025-03-15T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "title": "Beta Launch",
+      "status": "IN_PROGRESS",
+      "dueDate": "2027-05-01T10:00:00Z"
+    },
+    {
+      "id": 4,
+      "title": "Public Launch v1.0",
+      "status": "PENDING",
+      "dueDate": "2027-07-01T10:00:00Z"
+    }
+  ],
+  "risks": [
+    {
+      "id": 1,
+      "title": "Third-party payment API rate limits",
+      "severity": "LOW",
+      "status": "OPEN"
+    },
+    {
+      "id": 2,
+      "title": "Browser compatibility issues",
+      "severity": "MEDIUM",
+      "status": "CLOSED"
+    }
+  ]
+}

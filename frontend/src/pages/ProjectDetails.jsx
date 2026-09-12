@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getProject, getProjectHealth } from '../api';
+import { getProject, getProjectHealth } from '../services/api';
 import AIInsights from '../components/AIInsights';
 
 const ProjectDetails = () => {
